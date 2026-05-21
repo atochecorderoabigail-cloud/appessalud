@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>EsSalud · Ajustes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Estilos específicos para interruptores de alternancia (toggle switches) premium */
+    .switch-group {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .switch-group:last-child {
+      border-bottom: none;
+    }
+    .switch-label {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--gray-800);
+    }
+    .switch-desc {
+      font-size: 11px;
+      color: var(--gray-400);
+      margin-top: 2px;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: var(--gray-200);
+      transition: .3s;
+      border-radius: 24px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+    input:checked + .slider {
+      background-color: var(--blue-600);
+    }
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header fade-up">
+    <div class="header-top" style="justify-content: flex-start; gap: 16px;">
+      <a class="icon-btn" href="profile.html">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      </a>
+      <span class="logo-text">Ajustes</span>
+    </div>
+    <div class="header-greeting">
+      <p class="greeting-label">Configuración</p>
+      <h1 class="greeting-name">Mi Cuenta</h1>
+    </div>
+  </header>
+
+  <main class="main">
+    <form id="settingsForm" onsubmit="saveSettings(event)">
+      <!-- Datos personales -->
+      <div class="section-header">
+        <span class="section-title">Datos Personales</span>
+      </div>
+      <div class="card fade-up delay-1">
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label style="color: var(--gray-600); font-weight: 600;">Nombre Completo</label>
+          <input type="text" id="setNombre" class="form-control" style="color: var(--gray-800); border: 1px solid var(--gray-200); background: var(--gray-50);" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label style="color: var(--gray-600); font-weight: 600;">Correo Electrónico</label>
+          <input type="email" id="setEmail" class="form-control" style="color: var(--gray-800); border: 1px solid var(--gray-200); background: var(--gray-50);" required>
+        </div>
+        <div class="form-group">
+          <label style="color: var(--gray-600); font-weight: 600;">Hospital Adscrito</label>
+          <select id="setHospital" style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--gray-200); font-family: var(--font-body); font-size: 14px; color: var(--gray-800); background: var(--gray-50); outline: none;">
+            <option value="Hospital Edgardo Rebagliati Martins">Hospital Edgardo Rebagliati Martins</option>
+            <option value="Hospital Alberto Sabogal Sologuren">Hospital Alberto Sabogal Sologuren</option>
+            <option value="Hospital Guillermo Almenara Irigoyen">Hospital Guillermo Almenara Irigoyen</option>
+            <option value="Policlínico Pablo Bermúdez">Policlínico Pablo Bermúdez</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Preferencias de notificación -->
+      <div class="section-header">
+        <span class="section-title">Preferencias</span>
+      </div>
+      <div class="card">
+        <div class="switch-group">
+          <div>
+            <div class="switch-label">Alertas críticas</div>
+            <div class="switch-desc">Recibir avisos de alta ocupación en áreas críticas</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="prefAlerts" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="switch-group">
+          <div>
+            <div class="switch-label">Notificaciones de citas</div>
+            <div class="switch-desc">Recibir correos de confirmación de citas</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="prefCitas" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Cambiar Contraseña -->
+      <div class="section-header">
+        <span class="section-title">Seguridad</span>
+      </div>
+      <div class="card">
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label style="color: var(--gray-600); font-weight: 600;">Contraseña Actual</label>
+          <input type="password" id="oldPassword" class="form-control" style="color: var(--gray-800); border: 1px solid var(--gray-200); background: var(--gray-50);" placeholder="••••••••">
+        </div>
+        <div class="form-group">
+          <label style="color: var(--gray-600); font-weight: 600;">Nueva Contraseña</label>
+          <input type="password" id="newPassword" class="form-control" style="color: var(--gray-800); border: 1px solid var(--gray-200); background: var(--gray-50);" placeholder="Mínimo 6 caracteres" minlength="6">
+        </div>
+      </div>
+
+      <!-- Botón de Guardado -->
+      <button type="submit" style="background:var(--blue-600); color:white; border:none; padding:16px; border-radius:30px; width:100%; font-weight:600; font-size: 15px; font-family:var(--font-body); cursor:pointer; box-shadow: var(--shadow-blue); transition: all 0.2s; margin-bottom: 120px;">
+        Guardar cambios
+      </button>
+    </form>
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <a href="home.html" class="nav-item">
+      <div class="nav-icon-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <span class="nav-label">Inicio</span>
+    </a>
+    <a href="appointments.html" class="nav-item">
+      <div class="nav-icon-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <span class="nav-label">Citas</span>
+    </a>
+    <a href="new_appointment.html" class="nav-center-btn">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </a>
+    <a href="alerts.html" class="nav-item" style="position:relative">
+      <div class="nav-icon-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </div>
+      <span class="nav-badge">12</span>
+      <span class="nav-label">Alertas</span>
+    </a>
+    <a href="profile.html" class="nav-item active">
+      <div class="nav-icon-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <span class="nav-label">Perfil</span>
+    </a>
+  </nav>
+
+  <script>
+    // Recuperar y rellenar datos del usuario activo
+    const user = JSON.parse(localStorage.getItem('currentUser')) || {
+      name: 'María Alvarado',
+      dni: '71234567',
+      avatar: 'MA',
+      hospital: 'Hospital Edgardo Rebagliati Martins',
+      email: 'maria.alvarado@essalud.gob.pe'
+    };
+
+    document.getElementById('setNombre').value = user.name || 'María Alvarado';
+    document.getElementById('setEmail').value = user.email || 'maria.alvarado@essalud.gob.pe';
+    
+    if (user.hospital) {
+      document.getElementById('setHospital').value = user.hospital;
+    }
+
+    // Recuperar preferencias
+    const prefAlerts = localStorage.getItem('prefAlerts');
+    const prefCitas = localStorage.getItem('prefCitas');
+    if (prefAlerts !== null) {
+      document.getElementById('prefAlerts').checked = (prefAlerts === 'true');
+    }
+    if (prefCitas !== null) {
+      document.getElementById('prefCitas').checked = (prefCitas === 'true');
+    }
+
+    // Guardar cambios
+    function saveSettings(event) {
+      event.preventDefault();
+
+      const newName = document.getElementById('setNombre').value.trim();
+      const newEmail = document.getElementById('setEmail').value.trim();
+      const newHospital = document.getElementById('setHospital').value;
+      const changeAlerts = document.getElementById('prefAlerts').checked;
+      const changeCitas = document.getElementById('prefCitas').checked;
+
+      const oldPass = document.getElementById('oldPassword').value;
+      const newPass = document.getElementById('newPassword').value;
+
+      if (newPass && !oldPass) {
+        alert("⚠️ Por favor ingrese su contraseña actual para poder registrar la nueva contraseña.");
+        return;
+      }
+
+      // Actualizar el usuario
+      user.name = newName;
+      user.email = newEmail;
+      user.hospital = newHospital;
+
+      localStorage.setItem('currentUser', JSON.stringify(user));
+
+      // Guardar preferencias individuales
+      localStorage.setItem('prefAlerts', changeAlerts);
+      localStorage.setItem('prefCitas', changeCitas);
+
+      alert("✅ Cambios guardados correctamente.");
+      window.location.href = 'profile.html';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>EsSalud · Iniciar Sesión</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="auth-container">
+    <div class="auth-brand">
+      <div class="logo-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+        </svg>
+      </div>
+      <span class="logo-text">EsSalud</span>
+    </div>
+
+    <div class="auth-card">
+      <h1 class="auth-title">Bienvenido</h1>
+      <p class="auth-subtitle">Ingresa a tu portal de salud integral de manera segura y rápida</p>
+
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="dni">Número de DNI / Usuario</label>
+          <input type="text" id="dni" class="form-control" placeholder="Ej. 71234567" required pattern="^[a-zA-Z0-9]{8,15}$" title="El DNI o usuario debe tener entre 8 y 15 caracteres alfanuméricos">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 24px;">
+          <label for="password">Contraseña</label>
+          <input type="password" id="password" class="form-control" placeholder="••••••••" required minlength="6">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+        <a href="register.html" class="btn btn-secondary">Crear una cuenta nueva</a>
+      </form>
+    </div>
+
+    <div class="auth-footer">
+      ¿Problemas para acceder? <a href="recovery.html">Recuperar contraseña</a>
+    </div>
+  </div>
+
+  <script>
+    function handleLogin(event) {
+      event.preventDefault();
+      // Guardar sesión básica de demostración en localStorage
+      localStorage.setItem('currentUser', JSON.stringify({
+        name: 'María Alvarado',
+        dni: document.getElementById('dni').value,
+        avatar: 'MA',
+        hospital: 'Hospital Edgardo Rebagliati Martins'
+      }));
+      
+      // Animación suave antes de redirigir
+      const card = document.querySelector('.auth-card');
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(-10px)';
+      card.style.transition = 'all 0.3s ease';
+      
+      setTimeout(() => {
+        window.location.href = 'home.html';
+      }, 300);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<title>EsSalud · Sistema Integral</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* ===== TOKENS & RESET (mismo sistema que dashboard original) ===== */
+:root {
+  --blue-900: #0B2A6B;
+  --blue-700: #1B4FBF;
+  --blue-600: #2563EB;
+  --blue-500: #3B82F6;
+  --blue-100: #DBEAFE;
+  --blue-50:  #EFF6FF;
+  --teal:     #0D9488;
+  --amber:    #F59E0B;
+  --red:      #EF4444;
+  --green:    #10B981;
+  --white:    #FFFFFF;
+  --gray-50:  #F8FAFC;
+  --gray-100: #F1F5F9;
+  --gray-200: #E2E8F0;
+  --gray-400: #94A3B8;
+  --gray-600: #475569;
+  --gray-800: #1E293B;
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --shadow-sm: 0 1px 3px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04);
+  --shadow-md: 0 4px 16px rgba(15,23,42,0.08), 0 2px 6px rgba(15,23,42,0.04);
+  --shadow-lg: 0 12px 32px rgba(15,23,42,0.12), 0 4px 12px rgba(15,23,42,0.06);
+  --shadow-blue: 0 8px 24px rgba(37,99,235,0.22);
+  --font-body: 'DM Sans', sans-serif;
+  --font-display: 'DM Serif Display', serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-body);
+  background: var(--gray-50);
+  color: var(--gray-800);
+  min-height: 100vh;
+  max-width: 430px;
+  margin: 0 auto;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ===== ANIMACIONES ===== */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse-dot { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.3); } }
+.fade-up { animation: fadeUp 0.4s ease both; }
+.delay-1 { animation-delay: 0.05s; }
+
+/* ===== HEADER (dinámico) ===== */
+.header {
+  background: linear-gradient(145deg, var(--blue-900) 0%, var(--blue-700) 100%);
+  padding: 52px 22px 60px;
+  position: relative;
+}
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.logo-wrap { display: flex; align-items: center; gap: 10px; }
+.logo-icon {
+  width: 36px; height: 36px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.logo-text {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--white);
+}
+.icon-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #60A5FA, #3B82F6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+}
+.header-greeting { position: relative; z-index: 1; }
+.greeting-label { font-size: 12px; color: rgba(255,255,255,0.6); text-transform: uppercase; }
+.greeting-name { font-family: var(--font-display); font-size: 24px; color: var(--white); margin-top: 2px; }
+
+/* ===== MAIN CONTENT ===== */
+.main {
+  padding: 0 16px 100px;
+  margin-top: -48px;
+  position: relative;
+  z-index: 2;
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 22px 0 12px;
+}
+.section-title { font-size: 16px; font-weight: 600; color: var(--gray-800); }
+.section-link { font-size: 13px; color: var(--blue-600); font-weight: 500; cursor: pointer; }
+.card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 16px;
+}
+
+/* ===== BOTTOM NAV ===== */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  background: rgba(255,255,255,0.96);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid var(--gray-100);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 10px 0 20px;
+  z-index: 100;
+}
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 14px;
+}
+.nav-item.active .nav-label { color: var(--blue-600); }
+.nav-item.active .nav-icon-wrap { color: var(--blue-600); }
+.nav-icon-wrap { color: var(--gray-400); }
+.nav-label { font-size: 10px; font-weight: 600; color: var(--gray-400); }
+.nav-center-btn {
+  width: 52px; height: 52px;
+  background: linear-gradient(135deg, var(--blue-600), var(--blue-700));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-blue);
+  cursor: pointer;
+  margin-top: -18px;
+}
+.nav-badge {
+  position: absolute;
+  top: 4px; right: 8px;
+  background: var(--red);
+  color: white;
+  font-size: 8px;
+  font-weight: 700;
+  min-width: 15px;
+  height: 15px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== COMPONENTES REUTILIZABLES ===== */
+.filter-chip {
+  background: var(--gray-100);
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.filter-chip.active { background: var(--blue-600); color: white; }
+.appointment-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+.doctor-avatar-sm {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+.badge {
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+.badge--green { background: rgba(16,185,129,0.1); color: var(--green); }
+.badge--red { background: rgba(239,68,68,0.1); color: var(--red); }
+.badge--amber { background: rgba(245,158,11,0.1); color: #D97706; }
+.badge--blue { background: var(--blue-50); color: var(--blue-600); }
+.kpi-mini {
+  background: var(--gray-50);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <!-- El contenido se renderiza dinámicamente según la vista activa -->
+</div>
+
+<script>
+// ========== ESTADO DE NAVEGACIÓN ==========
+let currentView = 'dashboard'; // dashboard, appointments, alerts, newAppointment, searchDoctor, profile
+
+// ========== HELPER: RENDERIZAR HEADER DINÁMICO ==========
+function renderHeader(title, subtitle) {
+  return `
+    <header class="header fade-up">
+      <div class="header-top">
+        <div class="logo-wrap">
+          <div class="logo-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+            </svg>
+          </div>
+          <span class="logo-text">EsSalud</span>
+        </div>
+        <div class="header-actions" style="display:flex; gap:10px;">
+          <button class="icon-btn" onclick="navigateTo('alerts')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+            <span class="notif-badge" style="position:absolute; top:6px; right:6px; width:8px; height:8px; background:#F87171; border-radius:50%;"></span>
+          </button>
+          <div class="avatar" onclick="navigateTo('profile')">MA</div>
+        </div>
+      </div>
+      <div class="header-greeting">
+        <p class="greeting-label">${title}</p>
+        <h1 class="greeting-name">${subtitle}</h1>
+      </div>
+    </header>
+  `;
+}
+
+// ========== VISTA DASHBOARD (original adaptada) ==========
+function renderDashboard() {
+  return `
+    ${renderHeader('Buenos días', 'María Alvarado')}
+    <main class="main">
+      <!-- KPIs (simplificados) -->
+      <div class="fade-up delay-1" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+        <div class="card" style="background:linear-gradient(145deg, var(--blue-600), var(--blue-700)); color:white;" onclick="navigateTo('appointments')">
+          <div style="font-size: 28px; font-family: var(--font-display);">1,284</div>
+          <div style="font-size: 11px; opacity:0.8;">Citas hoy</div>
+        </div>
+        <div class="card" onclick="navigateTo('alerts')">
+          <div style="font-size: 28px; font-family: var(--font-display);">12</div>
+          <div style="font-size: 11px; color:var(--gray-400);">Alertas activas</div>
+        </div>
+      </div>
+      
+      <!-- Próxima cita -->
+      <div class="section-header"><span class="section-title">Próxima cita</span><span class="section-link" onclick="navigateTo('appointments')">Ver todas</span></div>
+      <div class="card" onclick="navigateTo('appointments')" style="display:flex; align-items:center; gap:14px;">
+        <div style="background:var(--blue-50); border-radius:16px; width:52px; height:58px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+          <span style="font-size:22px; font-weight:700; color:var(--blue-600);">15</span>
+          <span style="font-size:10px; font-weight:600;">May</span>
+        </div>
+        <div style="flex:1;">
+          <div style="font-weight:600;">Dr. Luis Fernández</div>
+          <div style="font-size:12px; color:var(--blue-600);">Medicina Interna</div>
+          <div style="font-size:11px; color:var(--gray-400);">10:00 a.m. · Consultorio 204</div>
+        </div>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      
+      <!-- Acciones rápidas -->
+      <div class="section-header"><span class="section-title">Acciones rápidas</span></div>
+      <div style="display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 20px;">
+        <div class="card" style="padding:12px; text-align:center; cursor:pointer;" onclick="navigateTo('newAppointment')"><div style="background:#EFF6FF; width:36px; height:36px; margin:0 auto 8px; border-radius:12px; display:flex; align-items:center; justify-content:center;">📅</div><span style="font-size:10px;">Nueva cita</span></div>
+        <div class="card" style="padding:12px; text-align:center; cursor:pointer;" onclick="navigateTo('searchDoctor')"><div style="background:#F0FDF4; width:36px; height:36px; margin:0 auto 8px; border-radius:12px; display:flex; align-items:center; justify-content:center;">👨‍⚕️</div><span style="font-size:10px;">Buscar médico</span></div>
+        <div class="card" style="padding:12px; text-align:center; cursor:pointer;" onclick="navigateTo('appointments')"><div style="background:#FFFBEB; width:36px; height:36px; margin:0 auto 8px; border-radius:12px; display:flex; align-items:center; justify-content:center;">📋</div><span style="font-size:10px;">Resultados</span></div>
+        <div class="card" style="padding:12px; text-align:center; cursor:pointer;" onclick="navigateTo('alerts')"><div style="background:#FFF1F2; width:36px; height:36px; margin:0 auto 8px; border-radius:12px; display:flex; align-items:center; justify-content:center;">⚠️</div><span style="font-size:10px;">Alertas</span></div>
+      </div>
+      
+      <!-- Médicos disponibles -->
+      <div class="section-header"><span class="section-title">Médicos disponibles</span><span class="section-link" onclick="navigateTo('searchDoctor')">Ver todos</span></div>
+      <div style="display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px;">
+        <div class="card" style="min-width:130px; text-align:center; cursor:pointer;" onclick="navigateTo('searchDoctor')"><div style="width:50px; height:50px; background:#2563EB; border-radius:50%; margin:0 auto 8px; display:flex; align-items:center; justify-content:center; color:white; font-weight:700;">LF</div><div style="font-weight:600; font-size:12px;">Dr. Fernández</div><div style="font-size:10px; color:green;">Disponible</div></div>
+        <div class="card" style="min-width:130px; text-align:center; cursor:pointer;" onclick="navigateTo('searchDoctor')"><div style="width:50px; height:50px; background:#EC4899; border-radius:50%; margin:0 auto 8px; display:flex; align-items:center; justify-content:center; color:white;">AG</div><div style="font-weight:600; font-size:12px;">Dra. Gómez</div><div style="font-size:10px; color:green;">Disponible</div></div>
+        <div class="card" style="min-width:130px; text-align:center;" onclick="navigateTo('searchDoctor')"><div style="width:50px; height:50px; background:#8B5CF6; border-radius:50%; margin:0 auto 8px; display:flex; align-items:center; justify-content:center; color:white;">JR</div><div style="font-weight:600; font-size:12px;">Dr. Ruiz</div><div style="font-size:10px; color:red;">En consulta</div></div>
+      </div>
+    </main>
+  `;
+}
+
+// ========== VISTA CITAS ==========
+function renderAppointments() {
+  return `
+    ${renderHeader('Gestión de Citas', 'Mis próximas citas')}
+    <main class="main">
+      <div style="display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto;">
+        <span class="filter-chip active" onclick="filterAppointments('all')">Todas</span>
+        <span class="filter-chip" onclick="filterAppointments('pending')">Pendientes</span>
+        <span class="filter-chip" onclick="filterAppointments('confirmed')">Confirmadas</span>
+      </div>
+      <div id="appointments-list">
+        <!-- Las citas se renderizan dinámicamente -->
+      </div>
+      <div class="card" style="text-align:center; margin-top:16px; cursor:pointer;" onclick="navigateTo('newAppointment')">
+        + Solicitar nueva cita
+      </div>
+    </main>
+  `;
+}
+
+const citasData = [
+  { id:1, doctor:"Dr. Luis Fernández", especialidad:"Medicina Interna", fecha:"15 Mayo", hora:"10:00", estado:"confirmada", consultorio:"204", avatar:"LF", color:"#2563EB" },
+  { id:2, doctor:"Dra. Ana Gómez", especialidad:"Cardiología", fecha:"18 Mayo", hora:"11:30", estado:"confirmada", consultorio:"308", avatar:"AG", color:"#EC4899" },
+  { id:3, doctor:"Dr. Carlos Ruiz", especialidad:"Neurología", fecha:"20 Mayo", hora:"09:00", estado:"pendiente", consultorio:"112", avatar:"CR", color:"#8B5CF6" },
+  { id:4, doctor:"Dra. Paola Díaz", especialidad:"Pediatría", fecha:"22 Mayo", hora:"14:00", estado:"pendiente", consultorio:"205", avatar:"PD", color:"#F97316" }
+];
+
+function renderAppointmentsList(filter = 'all') {
+  const filtered = filter === 'all' ? citasData : citasData.filter(c => c.estado === filter);
+  const container = document.getElementById('appointments-list');
+  if(!container) return;
+  container.innerHTML = filtered.map(c => `
+    <div class="card" style="margin-bottom:12px; cursor:pointer;" onclick="navigateTo('appointments')">
+      <div style="display:flex; gap:14px; align-items:center;">
+        <div class="doctor-avatar-sm" style="background:${c.color};">${c.avatar}</div>
+        <div style="flex:1;">
+          <div style="font-weight:600;">${c.doctor}</div>
+          <div style="font-size:12px; color:var(--gray-400);">${c.especialidad}</div>
+          <div style="font-size:12px; margin-top:4px;">${c.fecha} · ${c.hora} | Consultorio ${c.consultorio}</div>
+        </div>
+        <span class="badge ${c.estado === 'confirmada' ? 'badge--green' : 'badge--amber'}">${c.estado === 'confirmada' ? 'Confirmada' : 'Pendiente'}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+window.filterAppointments = (filter) => {
+  renderAppointmentsList(filter);
+  document.querySelectorAll('.filter-chip').forEach((chip, idx) => {
+    if((filter === 'all' && idx===0) || (filter === 'pending' && idx===1) || (filter === 'confirmed' && idx===2)) chip.classList.add('active');
+    else chip.classList.remove('active');
+  });
+};
+
+// ========== VISTA ALERTAS ==========
+function renderAlerts() {
+  return `
+    ${renderHeader('Centro de Alertas', 'Notificaciones y emergencias')}
+    <main class="main">
+      <div class="card" style="background:#FFF1F2; border-left:4px solid var(--red);" onclick="navigateTo('alerts')">
+        <div style="display:flex; gap:12px; align-items:center;">
+          <div style="background:rgba(239,68,68,0.1); width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center;">⚠️</div>
+          <div><div style="font-weight:700;">Alta ocupación en Cardiología</div><div style="font-size:12px;">Área al 95% de capacidad · Crítica</div></div>
+        </div>
+      </div>
+      <div class="card" style="background:#FFF1F2;" onclick="navigateTo('alerts')">
+        <div style="display:flex; gap:12px;"><div style="background:rgba(239,68,68,0.1); width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center;">👨‍⚕️</div><div><div style="font-weight:700;">Médico ausente — Pediatría</div><div style="font-size:12px;">Dr. Juan Pérez no se presentó</div></div></div>
+      </div>
+      <div class="card" onclick="navigateTo('alerts')">
+        <div style="display:flex; gap:12px;"><div style="background:rgba(245,158,11,0.1); width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center;">📋</div><div><div style="font-weight:700;">18 citas sin confirmar</div><div style="font-size:12px;">Pendientes de confirmación</div></div></div>
+      </div>
+      <div class="card" onclick="navigateTo('alerts')">
+        <div style="display:flex; gap:12px;"><div style="background:rgba(245,158,11,0.1); width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center;">⏰</div><div><div style="font-weight:700;">Retraso — Consultorio 204</div><div style="font-size:12px;">Espera >30 min · Advertencia</div></div></div>
+      </div>
+      <div class="section-header"><span class="section-title">Recomendaciones</span></div>
+      <div class="card" style="background:var(--blue-50);"><div style="font-weight:600;">📌 Refuerza turno en Urgencias</div><div style="font-size:12px;">Se recomienda personal adicional de 2pm a 8pm.</div></div>
+    </main>
+  `;
+}
+
+// ========== VISTA NUEVA CITA ==========
+function renderNewAppointment() {
+  return `
+    ${renderHeader('Agendar cita', 'Nueva solicitud')}
+    <main class="main">
+      <div class="card">
+        <div style="margin-bottom:16px;"><label style="font-weight:600;">Especialidad</label>
+          <select id="specialty" style="width:100%; padding:12px; border-radius:16px; border:1px solid var(--gray-200); margin-top:6px;">
+            <option>Medicina Interna</option><option>Cardiología</option><option>Neurología</option><option>Pediatría</option>
+          </select>
+        </div>
+        <div style="margin-bottom:16px;"><label style="font-weight:600;">Médico</label>
+          <select id="doctorSelect" style="width:100%; padding:12px; border-radius:16px; border:1px solid var(--gray-200); margin-top:6px;">
+            <option>Dr. Luis Fernández</option><option>Dra. Ana Gómez</option><option>Dr. Carlos Ruiz</option>
+          </select>
+        </div>
+        <div style="margin-bottom:16px;"><label style="font-weight:600;">Fecha</label><input type="date" id="apptDate" style="width:100%; padding:12px; border-radius:16px; border:1px solid var(--gray-200); margin-top:6px;"></div>
+        <div style="margin-bottom:16px;"><label style="font-weight:600;">Hora</label><input type="time" id="apptTime" style="width:100%; padding:12px; border-radius:16px; border:1px solid var(--gray-200); margin-top:6px;"></div>
+        <button onclick="confirmNewAppointment()" style="background:var(--blue-600); color:white; border:none; padding:14px; border-radius:30px; width:100%; font-weight:600; cursor:pointer;">Solicitar cita</button>
+      </div>
+    </main>
+  `;
+}
+window.confirmNewAppointment = () => {
+  alert("✅ Cita solicitada correctamente. Recibirás confirmación en breve.");
+  navigateTo('appointments');
+};
+
+// ========== VISTA BUSCAR MÉDICO ==========
+function renderSearchDoctor() {
+  return `
+    ${renderHeader('Directorio médico', 'Especialistas disponibles')}
+    <main class="main">
+      <div class="card" style="margin-bottom:16px;"><input type="text" placeholder="Buscar por nombre o especialidad..." style="width:100%; padding:12px; border-radius:30px; border:1px solid var(--gray-200);"></div>
+      <div id="doctorsList">
+        ${[
+          {name:"Dr. Luis Fernández", spec:"Medicina Interna", rating:"4.9", status:"Disponible", badge:"green", avatar:"LF", color:"#2563EB"},
+          {name:"Dra. Ana Gómez", spec:"Cardiología", rating:"4.8", status:"Disponible", badge:"green", avatar:"AG", color:"#EC4899"},
+          {name:"Dr. Carlos Ruiz", spec:"Neurología", rating:"4.7", status:"En consulta", badge:"red", avatar:"CR", color:"#8B5CF6"},
+          {name:"Dra. Paola Díaz", spec:"Pediatría", rating:"4.9", status:"Ausente", badge:"amber", avatar:"PD", color:"#F97316"},
+          {name:"Dr. Miguel Herrera", spec:"Traumatología", rating:"4.6", status:"Disponible", badge:"green", avatar:"MH", color:"#0D9488"}
+        ].map(doc => `
+          <div class="card" style="margin-bottom:12px; cursor:pointer;" onclick="navigateTo('newAppointment')">
+            <div style="display:flex; gap:14px; align-items:center;">
+              <div class="doctor-avatar-sm" style="background:${doc.color};">${doc.avatar}</div>
+              <div style="flex:1;"><div style="font-weight:600;">${doc.name}</div><div style="font-size:12px;">${doc.spec}</div><div style="font-size:11px;">★ ${doc.rating}</div></div>
+              <span class="badge badge--${doc.badge}">${doc.status}</span>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </main>
+  `;
+}
+
+// ========== VISTA PERFIL ==========
+function renderProfile() {
+  return `
+    ${renderHeader('Mi perfil', 'María Alvarado')}
+    <main class="main">
+      <div class="card" style="text-align:center;">
+        <div class="avatar" style="width:80px; height:80px; margin:0 auto 12px; font-size:28px;">MA</div>
+        <h3>María Alvarado</h3>
+        <p style="color:var(--gray-400);">DNI: 71234567 | Edad: 34 años</p>
+        <p style="color:var(--gray-400);">Hospital Rebagliati · Miembro desde 2022</p>
+      </div>
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; margin-bottom:12px;"><span style="font-weight:600;">Asegurado</span><span>ESS-00124587</span></div>
+        <div style="display:flex; justify-content:space-between;"><span style="font-weight:600;">Plan</span><span>Plan Familiar Plus</span></div>
+        <hr style="margin:12px 0;">
+        <div style="display:flex; gap:12px; justify-content:space-between;">
+          <div class="kpi-mini"><div style="font-size:20px; font-weight:700;">12</div><div>Citas atendidas</div></div>
+          <div class="kpi-mini"><div style="font-size:20px; font-weight:700;">4</div><div>Especialidades</div></div>
+        </div>
+      </div>
+      <div class="card" style="background:var(--blue-50); text-align:center; cursor:pointer;" onclick="alert('Configuración en desarrollo')">
+        ⚙️ Configuración de cuenta
+      </div>
+    </main>
+  `;
+}
+
+// ========== NAVEGACIÓN PRINCIPAL ==========
+function navigateTo(view) {
+  currentView = view;
+  renderCurrentView();
+}
+
+function renderCurrentView() {
+  const appDiv = document.getElementById('app');
+  let mainContent = '';
+  switch(currentView) {
+    case 'dashboard': mainContent = renderDashboard(); break;
+    case 'appointments': mainContent = renderAppointments(); setTimeout(()=>renderAppointmentsList('all'), 20); break;
+    case 'alerts': mainContent = renderAlerts(); break;
+    case 'newAppointment': mainContent = renderNewAppointment(); break;
+    case 'searchDoctor': mainContent = renderSearchDoctor(); break;
+    case 'profile': mainContent = renderProfile(); break;
+    default: mainContent = renderDashboard();
+  }
+  appDiv.innerHTML = mainContent + renderBottomNav();
+  attachNavEvents();
+}
+
+function renderBottomNav() {
+  return `
+    <nav class="bottom-nav">
+      <div class="nav-item ${currentView === 'dashboard' ? 'active' : ''}" data-nav="dashboard">
+        <div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+        <span class="nav-label">Inicio</span>
+      </div>
+      <div class="nav-item ${currentView === 'appointments' ? 'active' : ''}" data-nav="appointments">
+        <div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <span class="nav-label">Citas</span>
+      </div>
+      <div class="nav-center-btn" data-nav="newAppointment">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </div>
+      <div class="nav-item ${currentView === 'alerts' ? 'active' : ''}" data-nav="alerts" style="position:relative">
+        <div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+        <span class="nav-badge">12</span>
+        <span class="nav-label">Alertas</span>
+      </div>
+      <div class="nav-item ${currentView === 'profile' ? 'active' : ''}" data-nav="profile">
+        <div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <span class="nav-label">Perfil</span>
+      </div>
+    </nav>
+  `;
+}
+
+function attachNavEvents() {
+  document.querySelectorAll('.nav-item, .nav-center-btn').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const navTo = el.getAttribute('data-nav');
+      if(navTo) navigateTo(navTo);
+    });
+  });
+}
+
+// Inicializar
+renderCurrentView();
+</script>
+</body>
+</html>
